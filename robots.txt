@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://equiper.com.br/sitemap.xml
