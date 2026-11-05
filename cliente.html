@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do Cliente Equiper</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Acompanhe as manutenções preventivas dos seus equipamentos Equiper.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23111'/%3E%3Crect x='2' y='29' width='60' height='6' fill='%23d52b27'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23fff' stroke-width='8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="area/area.css">
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="left"><a href="index.html" class="logo"><img src="img/logo-horizontal.png" alt="Equiper Engenharia"></a><span class="tag">Área do cliente</span></div>
+    <div class="user" id="user" hidden><span class="email"></span><button class="btn btn-line btn-sm" id="sair" type="button">Sair</button></div>
+  </div>
+</header>
+<div class="demo" id="demo" hidden></div>
+
+<section class="login blueprint" id="login"><div class="carregando" style="color:#aaa">carregando…</div></section>
+
+<main class="painel paper" id="painel" hidden>
+  <div class="wrap" id="conteudo"></div>
+</main>
+
+<footer class="mini"><div class="wrap"><span>EQUIPER ENGENHARIA · CNPJ 07.099.828/0001-98</span><span>(24) 2221-6789 · contato@equiper.com.br</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="area/config.js"></script>
+<script src="area/app.js"></script>
+<script src="area/auth.js"></script>
+<script>
+const { API, fmt, esc, badge, statusDe, resumoEquip, diasAte, hoje } = EQ;
+const WA = '552422216789';
+const wa = t => `https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
+
+function quando(d) {
+  const n = diasAte(d);
+  if (n === 0) return 'hoje';
+  if (n === 1) return 'amanhã';
+  if (n > 0) return `em ${n} dias`;
+  return n === -1 ? 'há 1 dia' : `há ${-n} dias`;
+}
+
+async function carregar() {
+  const painel = document.getElementById('painel'), box = document.getElementById('conteudo');
+  painel.hidden = false;
+  box.innerHTML = '<div class="carregando">carregando seus equipamentos…</div>';
+  try {
+    const clientes = await API.clientes();
+    if (!clientes.length) {
+      box.innerHTML = `<div class="vazio" style="margin-top:20px"><h3 style="margin-bottom:6px">Cadastro não encontrado</h3>Seu login ainda não está vinculado a um cadastro de cliente. Fale com a Equiper pelo (24) 2221-6789.</div>`;
+      return;
+    }
+    const ids = clientes.map(c => c.id);
+    const eqs = await API.equipamentos(ids);
+    const ms = eqs.length ? await API.manutencoes(eqs.map(e => e.id)) : [];
+    box.innerHTML = clientes.map(c => blocoCliente(c, eqs.filter(e => e.cliente_id === c.id), ms)).join('') + ajuda(clientes[0]);
+  } catch (e) {
+    box.innerHTML = `<div class="msg err" style="margin-top:20px">Não foi possível carregar os dados: ${esc(e.message)}</div>`;
+  }
+}
+
+function blocoCliente(c, eqs, ms) {
+  const doCliente = ms.filter(m => eqs.some(e => e.id === m.equipamento_id));
+  const abertas = doCliente.filter(m => m.status === 'agendada' || m.status === 'em_andamento');
+  const atrasadas = abertas.filter(m => statusDe(m) === 'atrasada');
+  const futuras = abertas.filter(m => m.data_prevista >= hoje()).sort((a, b) => a.data_prevista.localeCompare(b.data_prevista));
+  const ano = hoje().slice(0, 4);
+  const feitasAno = doCliente.filter(m => m.status === 'concluida' && (m.data_realizada || m.data_prevista).startsWith(ano));
+  const andamento = abertas.filter(m => m.status === 'em_andamento');
+  const prox = futuras[0];
+
+  const resumos = eqs.map(e => ({ e, r: resumoEquip(e, doCliente) }));
+  const peso = { atrasada: 0, em_andamento: 1, emdia: 2, sem: 3 };
+  resumos.sort((a, b) => peso[a.r.estado] - peso[b.r.estado]);
+
+  return `
+  <div class="ola">
+    <div class="code">Cliente</div>
+    <h1>${esc(c.nome)}</h1>
+    <p>${esc(c.endereco || '')}</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Equipamentos</div><div class="v">${eqs.length}</div><div class="s">em manutenção preventiva</div></div>
+    <div class="tile"><div class="k">Próxima visita</div><div class="v">${prox ? fmt(prox.data_prevista).slice(0, 5) : '—'}</div><div class="s">${prox ? quando(prox.data_prevista) : 'nenhuma agendada'}</div></div>
+    <div class="tile ${atrasadas.length ? 'alert' : ''}"><div class="k">Atrasadas</div><div class="v">${atrasadas.length}</div><div class="s">${atrasadas.length ? 'aguardando reagendamento' : 'tudo em dia'}</div></div>
+    <div class="tile"><div class="k">Realizadas em ${ano}</div><div class="v">${feitasAno.length}</div><div class="s">${andamento.length ? andamento.length + ' em andamento agora' : 'visitas concluídas'}</div></div>
+  </div>
+  <div class="sec-head"><span class="n">01</span><span>Seus equipamentos</span><span class="pipe"></span></div>
+  ${eqs.length ? `<div class="equips">${resumos.map((x, i) => cartao(x.e, x.r, i, c)).join('')}</div>` : '<div class="vazio">Nenhum equipamento cadastrado ainda.</div>'}
+  <div style="height:40px"></div>`;
+}
+
+function cartao(e, r, i, c) {
+  const nome = [e.marca, e.modelo].filter(Boolean).join(' · ');
+  const stBadge = r.estado === 'atrasada' ? badge('atrasada') : r.estado === 'em_andamento' ? badge('em_andamento')
+    : r.estado === 'emdia' ? '<span class="badge b-concluida">Em dia</span>' : '<span class="badge b-cancelada">Sem agenda</span>';
+  const ult = r.ultima ? (r.ultima.data_realizada || r.ultima.data_prevista) : null;
+  const ciclo = r.ciclo == null ? '' : `
+    <div class="ciclo" title="Tempo decorrido desde a última visita">
+      <div class="bar"><i class="${r.estado === 'atrasada' ? 'late' : ''}" style="width:${Math.round(r.ciclo * 100)}%"></i></div>
+      <div class="leg"><span>${ult ? 'ÚLTIMA ' + fmt(ult) : 'INSTALAÇÃO'}</span><span>PRÓXIMA ${fmt(r.proxima.data_prevista)}</span></div>
+    </div>`;
+  const hist = r.hist.length ? `<ol class="timeline">${r.hist.map(m => {
+    const st = statusDe(m);
+    const data = m.status === 'concluida' ? (m.data_realizada || m.data_prevista) : m.data_prevista;
+    return `<li class="t-${st}"><div class="d">${fmt(data)} ${badge(st)}${m.tecnico ? `<span class="muted" style="font-weight:400">téc. ${esc(m.tecnico)}</span>` : ''}</div>
+      ${m.servicos ? `<p>${esc(m.servicos)}</p>` : ''}${m.observacoes ? `<p class="obs">${esc(m.observacoes)}</p>` : ''}</li>`;
+  }).join('')}</ol>` : '<p class="muted" style="padding:0 20px 18px;font-size:14px">Ainda sem registros.</p>';
+  return `
+  <article class="eq st-${r.estado}">
+    <div class="eq-top">
+      <div><div class="cod">EQ-${String(i + 1).padStart(2, '0')}${e.numero_serie ? ' · S/N ' + esc(e.numero_serie) : ''}</div>
+        <h3>${esc(e.tipo)}</h3><div class="sub">${esc(nome)}${e.local ? `<br>${esc(e.local)}` : ''}</div></div>
+      ${stBadge}
+    </div>
+    <div class="eq-dados">
+      <div><div class="k">Última manutenção</div><div class="v">${ult ? fmt(ult) : '—'}<small>${ult ? quando(ult) : 'sem registro'}</small></div></div>
+      <div><div class="k">Próxima</div><div class="v">${r.proxima ? fmt(r.proxima.data_prevista) : '—'}<small>${r.proxima ? (r.proxima.status === 'em_andamento' ? 'em andamento' : quando(r.proxima.data_prevista)) : 'a agendar'} · a cada ${e.periodicidade_meses} ${e.periodicidade_meses == 1 ? 'mês' : 'meses'}</small></div></div>
+    </div>
+    ${ciclo}
+    <details class="hist"><summary>Histórico (${r.hist.length})</summary>${hist}
+      <div style="padding:0 20px 18px"><a class="btn btn-line btn-sm" target="_blank" rel="noopener" href="${wa(`Olá, sou do cliente ${c.nome} e gostaria de falar sobre o equipamento ${e.tipo}${nome ? ' (' + nome + ')' : ''}.`)}">Falar sobre este equipamento</a></div>
+    </details>
+  </article>`;
+}
+
+function ajuda(c) {
+  return `<div class="ajuda">
+    <div><h3>Precisa de atendimento?</h3><p>Reagendar uma visita, relatar um problema ou pedir um orçamento.</p></div>
+    <div class="acts">
+      <a class="btn btn-wa" target="_blank" rel="noopener" href="${wa(`Olá, sou do cliente ${c.nome} e preciso de atendimento.`)}">WhatsApp</a>
+      <a class="btn btn-dark" href="tel:+552422216789">(24) 2221-6789</a>
+    </div></div>`;
+}
+
+EQ.iniciar({
+  codigo: 'ÁREA DO CLIENTE', titulo: 'Acompanhe suas manutenções',
+  subtitulo: 'Entre com o e-mail e a senha cadastrados pela Equiper.',
+  demoEmail: 'cliente@demo.com',
+  aoEntrar: carregar
+});
+</script>
+</body>
+</html>

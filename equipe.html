@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel Equipe Equiper</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23111'/%3E%3Crect x='2' y='29' width='60' height='6' fill='%23d52b27'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23fff' stroke-width='8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="area/area.css">
+<style>
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--black);margin:24px 0 24px}
+.tabs button{font:inherit;font-weight:600;padding:10px 18px;border:0;background:none;cursor:pointer;color:var(--gray);border-radius:var(--radius) var(--radius) 0 0}
+.tabs button.on{background:var(--black);color:#fff}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border:1.5px solid var(--line);background:#fff;border-radius:99px;cursor:pointer}
+.chips button.on{border-color:var(--black);background:var(--black);color:#fff}
+.chips button .c{font-family:var(--mono);margin-left:4px;opacity:.7}
+.tab-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:#fafafa}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.acts{white-space:nowrap;text-align:right}
+td.acts .btn+.btn{margin-left:4px}
+.tdate{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.cli-grid{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+@media(max-width:860px){.cli-grid{grid-template-columns:1fr}}
+.cli-list{background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+.cli-list input{font:inherit;width:100%;padding:10px 12px;border:0;border-bottom:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
+.cli-list input:focus{outline:2px solid var(--black)}
+.cli-list ul{list-style:none;max-height:60vh;overflow:auto}
+.cli-list li button{display:block;width:100%;text-align:left;font:inherit;padding:10px 14px;border:0;border-bottom:1px solid var(--line);background:none;cursor:pointer}
+.cli-list li button:hover{background:var(--paper)}
+.cli-list li button.on{background:var(--black);color:#fff}
+.cli-list li button small{display:block;opacity:.65;font-size:12px}
+.cli-det{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.cli-det h2{font-size:24px}
+.cli-det .head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:20px}
+.eq-adm{border:1px solid var(--line);border-radius:var(--radius);margin-top:14px}
+.eq-adm .t{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px;background:#fafafa;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.eq-adm .t h3{font-size:17px}
+.eq-adm .t .sub{font-size:13px;color:var(--gray)}
+dialog{border:0;border-radius:var(--radius);padding:0;width:min(560px,calc(100vw - 32px));box-shadow:0 30px 80px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(17,17,17,.55)}
+dialog form{padding:24px}
+dialog h3{font-size:22px;margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid var(--red)}
+dialog .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:520px){dialog .grid2{grid-template-columns:1fr}}
+dialog .full{grid-column:1/-1}
+dialog .foot{display:flex;justify-content:space-between;gap:10px;margin-top:8px;flex-wrap:wrap}
+dialog .foot .r{display:flex;gap:8px;margin-left:auto}
+.btn-del{color:var(--red);border-color:transparent}.btn-del:hover{border-color:var(--red)}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 18px;border-radius:var(--radius);font-size:14px;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="left"><a href="index.html" class="logo"><img src="img/logo-horizontal.png" alt="Equiper Engenharia"></a><span class="tag">Equipe</span></div>
+    <div class="user" id="user" hidden><span class="email"></span><button class="btn btn-line btn-sm" id="sair" type="button">Sair</button></div>
+  </div>
+</header>
+<div class="demo" id="demo" hidden></div>
+
+<section class="login blueprint" id="login"><div class="carregando" style="color:#aaa">carregando…</div></section>
+
+<main class="painel paper" id="painel" hidden>
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="on" data-tab="agenda" type="button">Agenda de manutenções</button>
+      <button data-tab="clientes" type="button">Clientes e equipamentos</button>
+    </div>
+    <div id="v-agenda"></div>
+    <div id="v-clientes" hidden></div>
+  </div>
+</main>
+
+<dialog id="dlg"><form method="dialog" id="dlg-f"></form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="area/config.js"></script>
+<script src="area/app.js"></script>
+<script src="area/auth.js"></script>
+<script>
+const { API, fmt, esc, badge, statusDe, hoje, addMeses, diasAte, STATUS } = EQ;
+let D = { clientes: [], equipamentos: [], manutencoes: [] };
+let filtro = 'abertas', clienteSel = null, busca = '';
+
+const $ = id => document.getElementById(id);
+const cliDe = eq => D.clientes.find(c => c.id === eq.cliente_id) || {};
+const eqDe = m => D.equipamentos.find(e => e.id === m.equipamento_id) || {};
+const nomeEq = e => [e.tipo, e.marca, e.modelo].filter(Boolean).join(' · ');
+function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+
+async function recarregar() {
+  const [clientes, equipamentos, manutencoes] = await Promise.all([API.clientes(), API.equipamentos(), API.manutencoes()]);
+  D = { clientes, equipamentos, manutencoes };
+  render();
+}
+function render() { renderAgenda(); renderClientes(); }
+
+// ---------------- formulário genérico ----------------
+const CAMPOS = {
+  clientes: [
+    { k: 'nome', l: 'Nome / razão social', req: 1, full: 1 },
+    { k: 'email', l: 'E-mail de login do cliente', t: 'email', req: 1, full: 1 },
+    { k: 'telefone', l: 'Telefone' },
+    { k: 'endereco', l: 'Endereço', full: 1 }
+  ],
+  equipamentos: [
+    { k: 'tipo', l: 'Tipo de equipamento', req: 1, full: 1, list: ['Pressurizador', 'Bomba de recalque', 'Aquecedor a gás', 'Bomba de calor (piscina)', 'Aquecimento solar', 'Filtragem de piscina', 'Gerador de vapor (sauna)', 'Sauna seca', 'Quadro de comando', 'Bomba de drenagem'] },
+    { k: 'marca', l: 'Marca', list: ['Grundfos', 'Rinnai', 'Solis', 'Tholz'] },
+    { k: 'modelo', l: 'Modelo' },
+    { k: 'local', l: 'Local de instalação', full: 1 },
+    { k: 'numero_serie', l: 'Nº de série' },
+    { k: 'periodicidade_meses', l: 'Periodicidade (meses)', t: 'number', req: 1, def: 6 },
+    { k: 'instalado_em', l: 'Instalado em', t: 'date' }
+  ],
+  manutencoes: [
+    { k: 'data_prevista', l: 'Data prevista', t: 'date', req: 1 },
+    { k: 'status', l: 'Situação', t: 'select', opts: ['agendada', 'em_andamento', 'concluida', 'cancelada'], def: 'agendada' },
+    { k: 'data_realizada', l: 'Data realizada', t: 'date' },
+    { k: 'tecnico', l: 'Técnico' },
+    { k: 'servicos', l: 'Serviços (o que foi / será feito)', t: 'textarea', full: 1 },
+    { k: 'observacoes', l: 'Observações / recomendações ao cliente', t: 'textarea', full: 1 }
+  ]
+};
+const TITULO = { clientes: 'cliente', equipamentos: 'equipamento', manutencoes: 'manutenção' };
+
+function formulario(tabela, valores, extra) {
+  const f = $('dlg-f'), novo = !valores.id;
+  const campo = c => {
+    const v = valores[c.k] != null ? valores[c.k] : (c.def != null ? c.def : '');
+    const id = 'f-' + c.k, req = c.req ? 'required' : '';
+    let inp;
+    if (c.t === 'select') inp = `<select id="${id}" name="${c.k}">${c.opts.map(o => `<option value="${o}" ${o === v ? 'selected' : ''}>${STATUS[o]}</option>`).join('')}</select>`;
+    else if (c.t === 'textarea') inp = `<textarea id="${id}" name="${c.k}" ${req}>${esc(v)}</textarea>`;
+    else inp = `<input id="${id}" name="${c.k}" type="${c.t || 'text'}" value="${esc(v)}" ${req} ${c.t === 'number' ? 'min="1" max="60"' : ''} ${c.list ? `list="dl-${c.k}"` : ''}>${c.list ? `<datalist id="dl-${c.k}">${c.list.map(o => `<option value="${esc(o)}">`).join('')}</datalist>` : ''}`;
+    return `<div class="field ${c.full ? 'full' : ''}"><label for="${id}">${c.l}</label>${inp}</div>`;
+  };
+  f.innerHTML = `<h3>${novo ? 'Novo' : 'Editar'} ${TITULO[tabela]}${extra && extra.sub ? `<div class="muted" style="font-family:var(--sans);font-size:14px;font-weight:400;margin-top:4px">${esc(extra.sub)}</div>` : ''}</h3>
+    <div class="grid2">${CAMPOS[tabela].map(campo).join('')}</div>
+    ${tabela === 'manutencoes' ? `<label class="check"><input type="checkbox" id="f-prox" checked> Ao concluir, agendar a próxima automaticamente</label>` : ''}
+    ${tabela === 'clientes' && novo && !API.demo ? `<p class="muted" style="font-size:13px;margin-bottom:12px">Depois de salvar, convide este e-mail no Supabase (Authentication → Users → Invite user) para o cliente criar a senha.</p>` : ''}
+    <div class="msg err" id="f-err" hidden></div>
+    <div class="foot">${novo ? '' : '<button class="btn btn-line btn-del btn-sm" type="button" id="f-del">Excluir</button>'}
+      <div class="r"><button class="btn btn-line" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-red" type="submit" id="f-ok">Salvar</button></div></div>`;
+  const dlg = $('dlg');
+  // ao mudar para concluída, preenche a data realizada
+  const st = $('f-status');
+  if (st) st.onchange = () => { if (st.value === 'concluida' && !$('f-data_realizada').value) $('f-data_realizada').value = hoje(); };
+  f.onsubmit = async ev => {
+    if (ev.submitter && ev.submitter.value === 'cancel') return;
+    ev.preventDefault();
+    const obj = Object.assign({}, extra && extra.fixos);
+    if (valores.id) obj.id = valores.id;
+    CAMPOS[tabela].forEach(c => { const el = $('f-' + c.k); obj[c.k] = c.t === 'number' ? Number(el.value) : el.value.trim(); });
+    if (tabela === 'clientes') obj.email = obj.email.toLowerCase();
+    if (tabela === 'manutencoes' && obj.status === 'concluida' && !obj.data_realizada) obj.data_realizada = hoje();
+    $('f-ok').disabled = true;
+    const eraConcluida = valores.status === 'concluida';
+    try {
+      const salvo = await API.salvar(tabela, obj);
+      if (tabela === 'manutencoes' && obj.status === 'concluida' && !eraConcluida && $('f-prox') && $('f-prox').checked) {
+        const eq = D.equipamentos.find(e => e.id === salvo.equipamento_id);
+        const jaTem = D.manutencoes.some(m => m.equipamento_id === salvo.equipamento_id && m.id !== salvo.id && m.status === 'agendada' && m.data_prevista > obj.data_realizada);
+        if (eq && !jaTem) {
+          const data = addMeses(obj.data_realizada, eq.periodicidade_meses);
+          await API.salvar('manutencoes', { equipamento_id: eq.id, data_prevista: data, status: 'agendada', tecnico: obj.tecnico });
+          toast('Próxima manutenção agendada para ' + fmt(data));
+        }
+      }
+      if (tabela === 'clientes') clienteSel = salvo.id;
+      dlg.close(); await recarregar(); toast('Salvo.');
+    } catch (e) { $('f-err').hidden = false; $('f-err').textContent = e.message; $('f-ok').disabled = false; }
+  };
+  const del = $('f-del');
+  if (del) del.onclick = async () => {
+    const aviso = tabela === 'clientes' ? 'Excluir este cliente, todos os equipamentos e o histórico?' : tabela === 'equipamentos' ? 'Excluir este equipamento e todo o histórico de manutenções?' : 'Excluir este registro de manutenção?';
+    if (!confirm(aviso)) return;
+    try { await API.excluir(tabela, valores.id); if (tabela === 'clientes') clienteSel = null; dlg.close(); await recarregar(); toast('Excluído.'); }
+    catch (e) { $('f-err').hidden = false; $('f-err').textContent = e.message; }
+  };
+  dlg.showModal();
+}
+
+// ---------------- agenda ----------------
+function renderAgenda() {
+  const abertas = D.manutencoes.filter(m => m.status === 'agendada' || m.status === 'em_andamento');
+  const grupos = {
+    abertas: abertas,
+    atrasadas: abertas.filter(m => statusDe(m) === 'atrasada'),
+    andamento: abertas.filter(m => m.status === 'em_andamento'),
+    '30d': abertas.filter(m => m.data_prevista >= hoje() && diasAte(m.data_prevista) <= 30),
+    concluidas: D.manutencoes.filter(m => m.status === 'concluida')
+  };
+  const rot = { abertas: 'Todas em aberto', atrasadas: 'Atrasadas', andamento: 'Em andamento', '30d': 'Próximos 30 dias', concluidas: 'Concluídas' };
+  const lista = grupos[filtro].slice().sort((a, b) => filtro === 'concluidas'
+    ? (b.data_realizada || b.data_prevista).localeCompare(a.data_realizada || a.data_prevista)
+    : a.data_prevista.localeCompare(b.data_prevista));
+  $('v-agenda').innerHTML = `
+    <div class="bar"><div class="chips">${Object.keys(rot).map(k => `<button type="button" data-f="${k}" class="${k === filtro ? 'on' : ''}">${rot[k]}<span class="c">${grupos[k].length}</span></button>`).join('')}</div>
+      ${API.demo ? '<button class="link" type="button" id="reset">Restaurar dados de exemplo</button>' : ''}</div>
+    ${lista.length ? `<div class="tab-wrap"><table><thead><tr><th>Data</th><th>Situação</th><th>Cliente</th><th>Equipamento</th><th>Técnico</th><th></th></tr></thead><tbody>
+    ${lista.map(m => { const e = eqDe(m), c = cliDe(e), st = statusDe(m), d = m.status === 'concluida' ? (m.data_realizada || m.data_prevista) : m.data_prevista;
+      return `<tr><td class="tdate">${fmt(d)}</td><td>${badge(st)}</td><td>${esc(c.nome)}</td><td>${esc(nomeEq(e))}<div class="muted" style="font-size:12.5px">${esc(e.local || '')}</div></td><td>${esc(m.tecnico || '—')}</td>
+      <td class="acts">${m.status === 'agendada' ? `<button class="btn btn-line btn-sm" data-ini="${m.id}" type="button">Iniciar</button>` : ''}${m.status !== 'concluida' && m.status !== 'cancelada' ? `<button class="btn btn-dark btn-sm" data-fim="${m.id}" type="button">Concluir</button>` : ''}<button class="btn btn-line btn-sm" data-ed="${m.id}" type="button">Editar</button></td></tr>`; }).join('')}
+    </tbody></table></div>` : '<div class="vazio">Nada por aqui.</div>'}`;
+  $('v-agenda').querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filtro = b.dataset.f; renderAgenda(); });
+  $('v-agenda').querySelectorAll('[data-ed]').forEach(b => b.onclick = () => abrirManut(b.dataset.ed));
+  $('v-agenda').querySelectorAll('[data-fim]').forEach(b => b.onclick = () => abrirManut(b.dataset.fim, { status: 'concluida', data_realizada: hoje() }));
+  $('v-agenda').querySelectorAll('[data-ini]').forEach(b => b.onclick = async () => {
+    const m = D.manutencoes.find(x => x.id === b.dataset.ini);
+    await API.salvar('manutencoes', { id: m.id, status: 'em_andamento' }); await recarregar(); toast('Manutenção em andamento.');
+  });
+  const r = $('reset'); if (r) r.onclick = async () => { API.resetDemo(); clienteSel = null; await recarregar(); toast('Dados de exemplo restaurados.'); };
+}
+function abrirManut(id, sobre) {
+  const m = D.manutencoes.find(x => x.id === id);
+  const e = eqDe(m);
+  formulario('manutencoes', m, { sub: cliDe(e).nome + ' — ' + nomeEq(e) });
+  if (sobre) { $('f-status').value = sobre.status; if (!$('f-data_realizada').value) $('f-data_realizada').value = sobre.data_realizada; }
+}
+
+// ---------------- clientes ----------------
+function renderClientes() {
+  const lista = D.clientes.filter(c => !busca || (c.nome + ' ' + c.email).toLowerCase().includes(busca.toLowerCase()));
+  if (clienteSel && !D.clientes.some(c => c.id === clienteSel)) clienteSel = null;
+  if (!clienteSel && D.clientes.length && window.innerWidth > 860) clienteSel = D.clientes[0].id;
+  const c = D.clientes.find(x => x.id === clienteSel);
+  $('v-clientes').innerHTML = `
+    <div class="bar"><span class="muted">${D.clientes.length} clientes · ${D.equipamentos.length} equipamentos</span><button class="btn btn-red btn-sm" id="novo-cli" type="button">+ Novo cliente</button></div>
+    <div class="cli-grid">
+      <div class="cli-list"><input id="busca" placeholder="Buscar cliente…" value="${esc(busca)}"><ul>
+        ${lista.map(x => { const n = D.equipamentos.filter(e => e.cliente_id === x.id).length;
+          return `<li><button type="button" data-c="${x.id}" class="${x.id === clienteSel ? 'on' : ''}">${esc(x.nome)}<small>${esc(x.email)} · ${n} equip.</small></button></li>`; }).join('') || '<li class="muted" style="padding:14px">Nenhum cliente.</li>'}
+      </ul></div>
+      <div>${c ? detalhe(c) : '<div class="vazio">Selecione um cliente.</div>'}</div>
+    </div>`;
+  const v = $('v-clientes');
+  $('novo-cli').onclick = () => formulario('clientes', {});
+  const bi = $('busca'); bi.oninput = () => { busca = bi.value; renderClientes(); const n = $('busca'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+  v.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { clienteSel = b.dataset.c; renderClientes(); if (window.innerWidth <= 860) $('det').scrollIntoView({ behavior: 'smooth' }); });
+  v.querySelectorAll('[data-edcli]').forEach(b => b.onclick = () => formulario('clientes', D.clientes.find(x => x.id === b.dataset.edcli)));
+  v.querySelectorAll('[data-novoeq]').forEach(b => b.onclick = () => formulario('equipamentos', {}, { fixos: { cliente_id: b.dataset.novoeq }, sub: c.nome }));
+  v.querySelectorAll('[data-edeq]').forEach(b => b.onclick = () => formulario('equipamentos', D.equipamentos.find(x => x.id === b.dataset.edeq), { sub: c.nome }));
+  v.querySelectorAll('[data-novam]').forEach(b => b.onclick = () => { const e = D.equipamentos.find(x => x.id === b.dataset.novam); formulario('manutencoes', {}, { fixos: { equipamento_id: e.id }, sub: c.nome + ' — ' + nomeEq(e) }); });
+  v.querySelectorAll('[data-edm]').forEach(b => b.onclick = () => abrirManut(b.dataset.edm));
+}
+function detalhe(c) {
+  const eqs = D.equipamentos.filter(e => e.cliente_id === c.id);
+  return `<div class="cli-det" id="det">
+    <div class="head"><div><div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em;font-weight:600">CLIENTE</div><h2>${esc(c.nome)}</h2>
+      <div class="muted" style="font-size:14px">${esc(c.email)}${c.telefone ? ' · ' + esc(c.telefone) : ''}${c.endereco ? '<br>' + esc(c.endereco) : ''}</div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-line btn-sm" data-edcli="${c.id}" type="button">Editar cliente</button><button class="btn btn-dark btn-sm" data-novoeq="${c.id}" type="button">+ Equipamento</button></div></div>
+    ${eqs.length ? eqs.map(e => {
+      const ms = D.manutencoes.filter(m => m.equipamento_id === e.id).sort((a, b) => b.data_prevista.localeCompare(a.data_prevista));
+      return `<div class="eq-adm"><div class="t"><div><h3>${esc(e.tipo)}</h3><div class="sub">${esc([e.marca, e.modelo].filter(Boolean).join(' · '))}${e.local ? ' · ' + esc(e.local) : ''} · a cada ${e.periodicidade_meses} meses</div></div>
+        <div style="display:flex;gap:6px"><button class="btn btn-line btn-sm" data-edeq="${e.id}" type="button">Editar</button><button class="btn btn-red btn-sm" data-novam="${e.id}" type="button">+ Manutenção</button></div></div>
+        ${ms.length ? `<div style="overflow-x:auto"><table><tbody>${ms.map(m => { const st = statusDe(m);
+          return `<tr><td class="tdate">${fmt(m.data_prevista)}${m.data_realizada ? `<div class="muted" style="font-weight:400;font-size:12px">feita ${fmt(m.data_realizada)}</div>` : ''}</td><td>${badge(st)}</td><td style="min-width:200px">${esc(m.servicos || '')}${m.tecnico ? `<div class="muted" style="font-size:12.5px">téc. ${esc(m.tecnico)}</div>` : ''}</td><td class="acts"><button class="btn btn-line btn-sm" data-edm="${m.id}" type="button">Editar</button></td></tr>`; }).join('')}</tbody></table></div>`
+          : '<p class="muted" style="padding:12px 16px;font-size:14px">Nenhuma manutenção registrada.</p>'}</div>`;
+    }).join('') : '<div class="vazio">Nenhum equipamento. Clique em “+ Equipamento”.</div>'}
+  </div>`;
+}
+
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $('v-agenda').hidden = b.dataset.tab !== 'agenda';
+  $('v-clientes').hidden = b.dataset.tab !== 'clientes';
+});
+
+EQ.iniciar({
+  codigo: 'ACESSO RESTRITO', titulo: 'Painel da equipe',
+  subtitulo: 'Cadastro de clientes, equipamentos e manutenções preventivas.',
+  demoEmail: 'equipe@demo.com',
+  aoEntrar: async () => {
+    $('painel').hidden = false;
+    try {
+      if (!await API.ehEquipe()) {
+        $('painel').querySelector('.wrap').innerHTML = '<div class="vazio" style="margin-top:24px">Este login não tem acesso ao painel da equipe. <a href="cliente.html" style="color:var(--red);font-weight:600">Ir para a área do cliente →</a></div>';
+        return;
+      }
+      await recarregar();
+    } catch (e) { $('v-agenda').innerHTML = `<div class="msg err">Erro ao carregar: ${esc(e.message)}</div>`; }
+  }
+});
+</script>
+</body>
+</html>
