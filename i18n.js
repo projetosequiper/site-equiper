@@ -2,8 +2,8 @@
 // Cada linha: [português, inglês, francês, italiano, espanhol].
 // Para traduzir um texto novo, adicione uma linha com o texto em português exatamente como está na página.
 (function () {
-const LANGS = ['pt', 'en', 'fr', 'it', 'es'];
-const HTML_LANG = { pt: 'pt-BR', en: 'en', fr: 'fr', it: 'it', es: 'es' };
+const LANGS = ['pt', 'en', 'fr', 'it', 'es', 'de'];
+const HTML_LANG = { pt: 'pt-BR', en: 'en', fr: 'fr', it: 'it', es: 'es', de: 'de' };
 const D = [
 // cabeçalho e menu
 ["Equiper Engenharia – Projetos e Instalações", "Equiper Engenharia – Building Services Design and Installation", "Equiper Engenharia – Projets et Installations", "Equiper Engenharia – Progettazione e Impianti", "Equiper Engenharia – Proyectos e Instalaciones"],
@@ -310,7 +310,8 @@ const D = [
 
 const norm = s => s.replace(/\s+/g, ' ').trim();
 const MAP = {};
-LANGS.forEach((l, i) => { if (i) { MAP[l] = {}; D.forEach(r => { MAP[l][norm(r[0])] = r[i]; }); } });
+LANGS.forEach((l, i) => { if (i && i < 5) { MAP[l] = {}; D.forEach(r => { MAP[l][norm(r[0])] = r[i]; }); } });
+MAP.de = {}; (window.EQ_DE || []).forEach(r => { MAP.de[norm(r[0])] = r[1]; });
 
 let lang = 'pt';
 window.T = function (s, vars) {
