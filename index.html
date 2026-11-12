@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Equiper Engenharia – Projetos e Instalações</title>
-<meta name="description" content="Equiper Engenharia, desde 2004 em Petrópolis (RJ), atendendo região serrana, Rio de Janeiro, Niterói, Região dos Lagos e Costa Verde:projetos de instalações prediais em BIM e fornecimento, instalação e manutenção de equipamentos para piscinas, saunas, pressurização, aquecimento e bombeamento.">
+<meta name="description" content="Equiper Engenharia, desde 2004 de Petrópolis (RJ) para o mundo: projetos de instalações prediais em BIM e fornecimento, instalação e manutenção de equipamentos para piscinas, saunas, pressurização, aquecimento e bombeamento.">
 <link rel="canonical" href="https://equiper.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Equiper Engenharia">
 <meta property="og:title" content="Equiper Engenharia – Projetos e Instalações">
-<meta property="og:description" content="Desde 2004 em projetos de instalações prediais em BIM e na instalação de equipamentos: piscinas, saunas, pressurização, aquecimento e bombeamento. Petrópolis – RJ.">
+<meta property="og:description" content="Desde 2004 em projetos de instalações prediais em BIM e na instalação de equipamentos: piscinas, saunas, pressurização, aquecimento e bombeamento. De Petrópolis para o mundo.">
 <meta property="og:url" content="https://equiper.com.br/">
 <meta property="og:image" content="https://equiper.com.br/img/obras/leblon-cm.jpg">
 <script type="application/ld+json">
@@ -65,10 +65,11 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px
 .nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
 .nav .logo img{height:44px;width:auto}
 .menu{display:flex;gap:28px;font-weight:600;font-size:15px}
-.menu a{position:relative;padding:4px 0}
+.menu a{position:relative;padding:4px 0;white-space:nowrap}
+@media(min-width:941px) and (max-width:1180px){.menu{gap:16px;font-size:14px}}
 .menu a::after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:2px;background:var(--red);transition:.25s}
 .menu a:hover::after{right:0}
-.nav .btn{padding:10px 18px}
+.nav .btn{padding:10px 18px;white-space:nowrap}
 .menu a.m-cli{color:var(--red);padding-left:14px;border-left:1px solid var(--line)}
 .menu a.m-cli::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:7px;vertical-align:1px}
 @media(max-width:940px){.menu a.m-cli{border-left:0;padding-left:16px}}
@@ -289,10 +290,34 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
 @media(max-width:860px){.carimbo{grid-template-columns:1fr 1fr}.carimbo>div:nth-child(2n){border-right:0}.carimbo>div:nth-child(-n+2){border-bottom:1px solid #333}}
 @media(max-width:520px){.carimbo{grid-template-columns:1fr}.carimbo>div{border-right:0;border-bottom:1px solid #333}.carimbo>div:last-child{border-bottom:0}}
 .foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;font-family:var(--mono);font-size:12px;color:#666}
+/* barra de idiomas */
+.topbar{background:#0b0b0b;color:#bbb;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.tb-in{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px}
+.tb-tag{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tb-tag::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.langs{display:flex;gap:4px;flex:none}
+.langs button{display:flex;align-items:center;gap:6px;background:none;border:1px solid transparent;color:#999;font:inherit;letter-spacing:.08em;padding:4px 6px;cursor:pointer;border-radius:3px}
+.langs button svg{width:22px;height:15px;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.25);border-radius:2px}
+.langs button:hover{color:#fff;border-color:#333}
+.langs button[aria-pressed="true"]{color:#fff;border-color:var(--red)}
+@media(max-width:620px){.langs button span{display:none}.langs button{padding:4px}.tb-in{flex-wrap:wrap;justify-content:center;gap:2px 12px;padding-top:6px;padding-bottom:4px}.tb-tag{letter-spacing:.08em}}
 .fab{position:fixed;right:18px;bottom:18px;width:58px;height:58px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 10px 25px -8px rgba(0,0,0,.5);z-index:60;color:#fff;border:3px solid #fff}
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="wrap tb-in">
+    <span class="tb-tag">De Petrópolis para o mundo</span>
+    <div class="langs" id="langs" role="group" aria-label="Idioma">
+      <button type="button" data-lang="pt" title="Português (Brasil)" aria-label="Português (Brasil)"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#009c3b"/><path d="M15 2.6 27.4 10 15 17.4 2.6 10z" fill="#ffdf00"/><circle cx="15" cy="10" r="4.3" fill="#002776"/><path d="M10.9 9.1c2.7-.7 5.7-.3 8.2 1.3" stroke="#fff" stroke-width=".9" fill="none"/></svg><span>PT</span></button>
+      <button type="button" data-lang="en" title="English" aria-label="English"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><path d="M0 0h30v1.54H0zM0 3.08h30v1.54H0zM0 6.15h30v1.54H0zM0 9.23h30v1.54H0zM0 12.31h30v1.54H0zM0 15.38h30v1.54H0zM0 18.46h30V20H0z" fill="#b22234"/><rect width="12.5" height="10.77" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.2" cy="2" r=".6"/><circle cx="5.2" cy="2" r=".6"/><circle cx="8.2" cy="2" r=".6"/><circle cx="11" cy="2" r=".6"/><circle cx="3.7" cy="4.2" r=".6"/><circle cx="6.7" cy="4.2" r=".6"/><circle cx="9.6" cy="4.2" r=".6"/><circle cx="2.2" cy="6.4" r=".6"/><circle cx="5.2" cy="6.4" r=".6"/><circle cx="8.2" cy="6.4" r=".6"/><circle cx="11" cy="6.4" r=".6"/><circle cx="3.7" cy="8.6" r=".6"/><circle cx="6.7" cy="8.6" r=".6"/><circle cx="9.6" cy="8.6" r=".6"/></g></svg><span>EN</span></button>
+      <button type="button" data-lang="fr" title="Français" aria-label="Français"><svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#002395"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ed2939"/></svg><span>FR</span></button>
+      <button type="button" data-lang="it" title="Italiano" aria-label="Italiano"><svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce2b37"/></svg><span>IT</span></button>
+      <button type="button" data-lang="es" title="Español" aria-label="Español"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#aa151b"/><rect y="5" width="30" height="10" fill="#f1bf00"/></svg><span>ES</span></button>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="wrap nav">
@@ -318,7 +343,7 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
   <div class="wrap hero-grid">
     <div>
       <div class="tag">Engenharia de instalações · desde 2004</div>
-      <h1>Do projeto em BIM ao equipamento <em>funcionando</em>.</h1>
+      <h1 data-i18n-html>Do projeto em BIM ao equipamento <em>funcionando</em>.</h1>
       <p>Projetamos as instalações da sua edificação e fornecemos, instalamos e mantemos os equipamentos que fazem tudo funcionar: piscinas, saunas, pressurização, aquecimento e bombeamento.</p>
       <div class="hero-ctas">
         <a href="#contato" class="btn btn-red">Solicitar orçamento →</a>
@@ -508,9 +533,9 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
       <button data-f="aquecimento">Aquecimento</button>
       <button data-f="piscina">Piscinas</button>
     </div>
-    <div class="grid" id="obras"></div>
+    <div class="grid" id="obras" data-noi18n></div>
     <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-line-dark" id="mais" type="button">Ver todos os trabalhos</button>
+      <button class="btn btn-line-dark" id="mais" type="button" data-noi18n>Ver todos os trabalhos</button>
       <a class="btn btn-dark" href="https://www.instagram.com/equiperengenharia/" target="_blank" rel="noopener">Instagram @equiperengenharia →</a>
     </div>
   </div>
@@ -534,8 +559,8 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
   <div class="wrap split">
     <div>
       <div class="sec-head"><span class="n">06</span><span>Área de atuação</span><span class="pipe"></span></div>
-      <h2>De Petrópolis para todo o estado do Rio</h2>
-      <p class="lead">Nossa base fica em Corrêas, Petrópolis. De lá atendemos a região serrana, a capital, Niterói, a Região dos Lagos e a Costa Verde. Nossos projetos já chegaram a 16 estados brasileiros.</p>
+      <h2>De Petrópolis para o mundo</h2>
+      <p class="lead">Nossa base fica em Corrêas, Petrópolis. Daqui atendemos a região serrana, a capital, Niterói, a Região dos Lagos e a Costa Verde. Nossos projetos já chegaram a 16 estados brasileiros, e desenvolvemos projetos em BIM para qualquer lugar do mundo.</p>
       <div class="base">
         <span class="k">BASE · SEDE</span>
         <b>Corrêas, Petrópolis – RJ</b>
@@ -548,6 +573,7 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
       <div class="nd"><span class="c">02</span><div><b>Niterói</b><span>Atendimento completo</span></div></div>
       <div class="nd"><span class="c">03</span><div><b>Região dos Lagos</b><span>Litoral leste fluminense</span></div></div>
       <div class="nd"><span class="c">04</span><div><b>Angra dos Reis e Mangaratiba</b><span>Costa Verde</span></div></div>
+      <div class="nd hq"><span class="c">05</span><div><b>Brasil e exterior</b><span>Projetos em BIM para qualquer lugar do mundo</span></div></div>
     </div>
   </div>
 </section>
@@ -605,9 +631,9 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
       <label>E-mail<input id="f-email" type="email" placeholder="voce@email.com"></label>
       <div class="row">
         <label>Serviço<select id="f-serv">
-          <option>Projeto de instalações</option><option>Piscina</option><option>Sauna</option><option>Pressurização</option>
-          <option>Aquecimento de água</option><option>Bombeamento</option><option>Manutenção de bombas (Grundfos)</option><option>Assistência de aquecedores (Rinnai)</option><option>Outro assunto</option></select></label>
-        <label>Imóvel<select id="f-imovel"><option>Residência</option><option>Condomínio</option><option>Comercial</option></select></label>
+          <option value="Projeto de instalações">Projeto de instalações</option><option value="Piscina">Piscina</option><option value="Sauna">Sauna</option><option value="Pressurização">Pressurização</option>
+          <option value="Aquecimento de água">Aquecimento de água</option><option value="Bombeamento">Bombeamento</option><option value="Manutenção de bombas (Grundfos)">Manutenção de bombas (Grundfos)</option><option value="Assistência de aquecedores (Rinnai)">Assistência de aquecedores (Rinnai)</option><option value="Outro assunto">Outro assunto</option></select></label>
+        <label>Imóvel<select id="f-imovel"><option value="Residência">Residência</option><option value="Condomínio">Condomínio</option><option value="Comercial">Comercial</option></select></label>
       </div>
       <label>Mensagem<textarea id="f-msg" placeholder="Descreva rapidamente o que você precisa"></textarea></label>
       <div class="route">Será enviado para: <b id="f-to">projetos@equiper.com.br</b></div>
@@ -637,11 +663,12 @@ footer{background:#0b0b0b;color:#9a9a9a;padding:44px 0 28px;font-size:14px}
 <a class="fab" href="https://wa.me/552422216789?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Equiper." target="_blank" rel="noopener" aria-label="Falar com a Equiper no WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.8-1.1-4.6-4-4.8-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.6-.1 1.2z"/></svg></a>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Galeria do trabalho">
-  <div class="lb-top"><div><span class="tag" id="lb-tag"></span><h3 id="lb-t"></h3><p id="lb-d"></p></div><button class="lb-x" id="lb-x" aria-label="Fechar">×</button></div>
+  <div class="lb-top"><div data-noi18n><span class="tag" id="lb-tag"></span><h3 id="lb-t"></h3><p id="lb-d"></p></div><button class="lb-x" id="lb-x" aria-label="Fechar">×</button></div>
   <div class="lb-main"><button class="lb-nav lb-prev" id="lb-p" aria-label="Anterior">‹</button><img id="lb-img" alt=""><button class="lb-nav lb-next" id="lb-n" aria-label="Próxima">›</button></div>
-  <div class="lb-foot" id="lb-c"></div>
+  <div class="lb-foot" id="lb-c" data-noi18n></div>
 </div>
 
+<script src="i18n.js"></script>
 <script>
 // ===== Portfólio: edite esta lista para incluir novos trabalhos =====
 // cat: projeto | instalacao | aquecimento | piscina   ·   draw: true para desenhos (exibe sem cortar)
@@ -697,6 +724,7 @@ const OBRAS=[
   img:[I+'DbeEjNnGDgz.jpg']}
 ];
 const VISIVEIS=9;
+const tagT=t=>t.split(' · ').map(x=>T(x)).join(' · ');
 let filtro='all', todos=false;
 const grid=document.getElementById('obras'), mais=document.getElementById('mais');
 function render(){
@@ -704,11 +732,11 @@ function render(){
   const mostrar=todos?lista:lista.slice(0,VISIVEIS);
   grid.innerHTML=mostrar.map(({o,i})=>`
     <button class="proj" type="button" data-i="${i}">
-      <div class="img"><img src="${o.img[0]}" alt="${o.t}" loading="lazy" class="${o.draw?'draw':''}"><span class="lbl">${o.tag.split(' · ')[0].toUpperCase()}</span>${o.img.length>1?`<span class="cnt">${o.img.length} imagens</span>`:''}</div>
-      <div class="body"><span class="tag">${o.tag}</span><h3>${o.t}</h3>${o.loc?`<span class="loc">${o.loc}</span>`:''}<p>${o.d}</p></div>
+      <div class="img"><img src="${o.img[0]}" alt="${T(o.t)}" loading="lazy" class="${o.draw?'draw':''}"><span class="lbl">${T(o.tag.split(' · ')[0]).toUpperCase()}</span>${o.img.length>1?`<span class="cnt">${T('{n} imagens',{n:o.img.length})}</span>`:''}</div>
+      <div class="body"><span class="tag">${tagT(o.tag)}</span><h3>${T(o.t)}</h3>${o.loc?`<span class="loc">${T(o.loc)}</span>`:''}<p>${T(o.d)}</p></div>
     </button>`).join('');
   mais.hidden=lista.length<=VISIVEIS;
-  mais.textContent=todos?'Mostrar menos':`Ver todos os ${lista.length} trabalhos`;
+  mais.textContent=todos?T('Mostrar menos'):T('Ver todos os {n} trabalhos',{n:lista.length});
 }
 document.querySelectorAll('#filters button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('on'));
@@ -717,12 +745,13 @@ document.querySelectorAll('#filters button').forEach(b=>b.addEventListener('clic
 mais.addEventListener('click',()=>{todos=!todos;render();if(!todos)document.getElementById('portfolio').scrollIntoView();});
 // galeria
 const lb=document.getElementById('lb'); let cur=null, k=0;
-function show(){const o=OBRAS[cur];document.getElementById('lb-img').src=o.img[k];document.getElementById('lb-img').alt=o.t;
+function show(){const o=OBRAS[cur];document.getElementById('lb-img').src=o.img[k];document.getElementById('lb-img').alt=T(o.t);
   document.getElementById('lb-c').textContent=`${k+1} / ${o.img.length}`;
   document.getElementById('lb-p').hidden=document.getElementById('lb-n').hidden=o.img.length<2;}
-function abrir(i){cur=i;k=0;const o=OBRAS[i];document.getElementById('lb-t').textContent=o.t+(o.loc?' · '+o.loc:'');
-  document.getElementById('lb-d').textContent=o.d;document.getElementById('lb-tag').textContent=o.tag.toUpperCase();
+function abrir(i){cur=i;k=0;const o=OBRAS[i];textoLb();
   show();lb.classList.add('open');document.body.style.overflow='hidden';}
+function textoLb(){const o=OBRAS[cur];document.getElementById('lb-t').textContent=T(o.t)+(o.loc?' · '+T(o.loc):'');
+  document.getElementById('lb-d').textContent=T(o.d);document.getElementById('lb-tag').textContent=tagT(o.tag).toUpperCase();}
 function fechar(){lb.classList.remove('open');document.body.style.overflow='';}
 grid.addEventListener('click',e=>{const b=e.target.closest('.proj');if(b)abrir(+b.dataset.i);});
 document.getElementById('lb-x').onclick=fechar;
@@ -732,6 +761,7 @@ lb.addEventListener('click',e=>{if(e.target===lb||e.target.classList.contains('l
 document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;
   if(e.key==='Escape')fechar();if(e.key==='ArrowLeft')document.getElementById('lb-p').click();if(e.key==='ArrowRight')document.getElementById('lb-n').click();});
 render();
+document.addEventListener('langchange',()=>{render();if(lb.classList.contains('open')){textoLb();show();}});
 document.querySelectorAll('#menu a').forEach(a=>a.addEventListener('click',()=>document.getElementById('menu').classList.remove('open')));
 
 // formulário: projetos -> projetos@ ; equipamentos e geral -> contato@
